@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="UserEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="uid" property="uid" jdbcType="BIGINT" />
+    <result column="country_code" property="countryCode" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="CHAR" />
+    <result column="caimao_password" property="caimaoPassword" jdbcType="CHAR" />
+    <result column="pwd_security_score" property="pwdSecurityScore" jdbcType="SMALLINT" />
+    <result column="status" property="status" jdbcType="SMALLINT" />
+    <result column="reg_ip" property="regIp" jdbcType="VARCHAR" />
+    <result column="reg_date_time" property="regDateTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, country_code, phone, email, password,caimao_password, pwd_security_score, status, reg_ip, reg_date_time,update_time
+  </sql>
+
+  <select id="selectByPhoneOrEmail" resultType="java.lang.Long" parameterType="java.lang.String">
+    select uid from user where phone = #{userName, jdbcType=VARCHAR} or email = #{userName, jdbcType=VARCHAR}  limit 1
+  </select>
+
+  <select id="selectByPhone" resultType="java.lang.Long" parameterType="java.util.HashMap">
+    select uid from user
+    where phone = #{phone, jdbcType=VARCHAR}
+    <if test="countryCode != null">
+      and country_code = #{countryCode, jdbcType=VARCHAR} limit 1
+    </if>
+  </select>
+
+  <select id="selectByEmail" resultType="java.lang.Long" parameterType="java.lang.String">
+    select uid from user where email = #{email, jdbcType=VARCHAR}  limit 1
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where uid = #{uid,jdbcType=BIGINT}  limit 1
+  </select>
+
+  <select id="selectByUid" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where uid = #{uid,jdbcType=BIGINT}  limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user where uid = #{uid,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert"  parameterType="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" useGeneratedKeys="true" keyProperty="id">
+
+    insert into user (id, uid, country_code,
+      phone, email, password,caimao_password,
+      pwd_security_score, status,
+      reg_ip, reg_date_time,update_time)
+    values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{countryCode,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=CHAR}, #{caimaoPassword,jdbcType=CHAR},
+      #{pwdSecurityScore,jdbcType=SMALLINT}, #{status,jdbcType=SMALLINT},
+      #{regIp,jdbcType=VARCHAR}, #{regDateTime,jdbcType=TIMESTAMP},now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="countryCode != null" >
+        country_code,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="caimaoPassword != null" >
+        caimao_password,
+      </if>
+      <if test="pwdSecurityScore != null" >
+        pwd_security_score,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="regIp != null" >
+        reg_ip,
+      </if>
+      <if test="regDateTime != null" >
+        reg_date_time,
+      </if>
+      update_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="countryCode != null" >
+        #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=CHAR},
+      </if>
+      <if test="caiamoPassword != null" >
+        #{caiamo_password,jdbcType=CHAR},
+      </if>
+      <if test="pwdSecurityScore != null" >
+        #{pwdSecurityScore,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="regIp != null" >
+        #{regIp,jdbcType=VARCHAR},
+      </if>
+      <if test="regDateTime != null" >
+        #{regDateTime,jdbcType=TIMESTAMP},
+      </if>
+       now()
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" >
+    update user
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=BIGINT},
+      </if>
+      <if test="countryCode != null" >
+        country_code = #{countryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=CHAR},
+      </if>
+      <if test="caimaoPassword != null" >
+        caimao_password = #{caimaoPassword,jdbcType=CHAR},
+      </if>
+      <if test="pwdSecurityScore != null" >
+        pwd_security_score = #{pwdSecurityScore,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="regIp != null" >
+        reg_ip = #{regIp,jdbcType=VARCHAR},
+      </if>
+      <if test="regDateTime != null" >
+        reg_date_time = #{regDateTime,jdbcType=TIMESTAMP},
+      </if>
+      update_time = now()
+    </set>
+    where uid = #{uid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" >
+    update user
+    set uid = #{uid,jdbcType=BIGINT},
+      country_code = #{countryCode,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      password = #{password,jdbcType=CHAR},
+      caimao_password = #{caimaoPassword,jdbcType=CHAR},
+      pwd_security_score = #{pwdSecurityScore,jdbcType=SMALLINT},
+      status = #{status,jdbcType=SMALLINT},
+      reg_ip = #{regIp,jdbcType=VARCHAR},
+      reg_date_time = #{regDateTime,jdbcType=TIMESTAMP},
+      update_time = now()
+    where uid = #{uid,jdbcType=BIGINT}
+  </update>
+  <update id="updateUidById" parameterType="com.caimao.pfs.uc.dao.mysql.entity.UserEntity" >
+    update user set uid = #{uid,jdbcType=BIGINT} where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
