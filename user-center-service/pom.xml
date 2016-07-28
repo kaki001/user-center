@@ -130,6 +130,21 @@
 
     <build>
         <finalName>uc-server</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>conf/jdbc.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -139,6 +154,13 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
                     <excludes>
                         <exclude>**/*.properties</exclude>
                     </excludes>
@@ -159,8 +181,9 @@
                 <version>1.10</version>
                 <configuration>
                     <configurationDirectory>conf</configurationDirectory>
-                    <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
+                    <configurationSourceDirectory>target/classes/conf</configurationSourceDirectory>
                     <copyConfigurationDirectory>true</copyConfigurationDirectory>
+                    <filterPreAssembleDirectory>true</filterPreAssembleDirectory>
                     <includeConfigurationDirectoryInClasspath>false</includeConfigurationDirectoryInClasspath>
                     <assembleDirectory>${project.build.directory}/uc-server</assembleDirectory>
                     <extraJvmArguments>-Xms128m</extraJvmArguments>
@@ -204,5 +227,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <filters>
+                    <filter>profile/dev-jdbc.properties</filter>
+                </filters>
+            </build>
+            <properties>
+                <project.environment>dev</project.environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>online</id>
+            <build>
+                <filters>
+                    <filter>profile/online-jdbc.properties</filter>
+                </filters>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
